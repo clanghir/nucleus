@@ -12,6 +12,10 @@ using Abp.Zero.Configuration;
 using Nucleus.Authentication.JwtBearer;
 using Nucleus.Configuration;
 using Nucleus.EntityFrameworkCore;
+using Abp.Runtime.Caching.Redis;
+using Abp.Threading;
+using System.Net;
+using Castle.Core.Logging;
 
 namespace Nucleus
 {
@@ -19,17 +23,20 @@ namespace Nucleus
          typeof(NucleusApplicationModule),
          typeof(NucleusEntityFrameworkModule),
          typeof(AbpAspNetCoreModule)
-        ,typeof(AbpAspNetCoreSignalRModule)
+        ,typeof(AbpAspNetCoreSignalRModule),
+        typeof(AbpRedisCacheModule)
      )]
     public class NucleusWebCoreModule : AbpModule
     {
         private readonly IHostingEnvironment _env;
         private readonly IConfigurationRoot _appConfiguration;
+        public ILogger Logger { get; set; }
 
         public NucleusWebCoreModule(IHostingEnvironment env)
         {
             _env = env;
             _appConfiguration = env.GetAppConfiguration();
+            Logger = NullLogger.Instance;
         }
 
         public override void PreInitialize()
@@ -37,6 +44,17 @@ namespace Nucleus
             Configuration.DefaultNameOrConnectionString = _appConfiguration.GetConnectionString(
                 NucleusConsts.ConnectionStringName
             );
+
+            Configuration.Caching.UseRedis(options =>
+            {
+                var connectionString = _appConfiguration["Abp:RedisCache:ConnectionString"];
+                Logger.Info("Redis-Connection: " + connectionString);
+
+                if (connectionString != null && connectionString != "localhost")
+                {
+                    options.ConnectionString = AsyncHelper.RunSync(() => Dns.GetHostAddressesAsync(connectionString))[0].ToString();
+                }
+            });
 
             // Use database for language management
             Configuration.Modules.Zero().LanguageManagement.EnableDbLocalization();

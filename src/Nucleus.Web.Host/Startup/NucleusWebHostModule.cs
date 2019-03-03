@@ -3,6 +3,9 @@ using Microsoft.Extensions.Configuration;
 using Abp.Modules;
 using Abp.Reflection.Extensions;
 using Nucleus.Configuration;
+using Abp.Runtime.Caching.Redis;
+using Abp.Threading;
+using System.Net;
 
 namespace Nucleus.Web.Host.Startup
 {
@@ -23,5 +26,6 @@ namespace Nucleus.Web.Host.Startup
         {
             IocManager.RegisterAssemblyByConvention(typeof(NucleusWebHostModule).GetAssembly());
         }
+
     }
 }
