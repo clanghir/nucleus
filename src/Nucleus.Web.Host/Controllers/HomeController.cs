@@ -16,9 +16,10 @@ namespace Nucleus.Web.Host.Controllers
         private readonly ICacheManager _cacheManager;
 
 
-        public HomeController(INotificationPublisher notificationPublisher)
+        public HomeController(INotificationPublisher notificationPublisher, ICacheManager cacheManager)
         {
             _notificationPublisher = notificationPublisher;
+            _cacheManager = cacheManager;
         }
 
         public IActionResult Index()
