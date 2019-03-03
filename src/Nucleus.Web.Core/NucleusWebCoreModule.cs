@@ -54,7 +54,7 @@ namespace Nucleus
                // var connectionString = _appConfiguration.GetConnectionString("Redis");
                // Logger.Info("Redis-Connection: " + connectionString);
 
-                options.ConnectionString = connectionString;
+               //options.ConnectionString = connectionString;
                 /*
                 if (connectionString != null && connectionString != "localhost")
                 {
