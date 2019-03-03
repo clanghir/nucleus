@@ -45,16 +45,22 @@ namespace Nucleus
                 NucleusConsts.ConnectionStringName
             );
 
-            Configuration.Caching.UseRedis(options =>
-            {
-                var connectionString = _appConfiguration["Abp:RedisCache:ConnectionString"];
-                Logger.Info("Redis-Connection: " + connectionString);
+            Configuration.Caching.UseRedis();
 
+
+            //Configuration.Caching.UseRedis(options =>
+           // {
+                //var connectionString = _appConfiguration["Abp:RedisCache:ConnectionString"];
+               // var connectionString = _appConfiguration.GetConnectionString("Redis");
+               // Logger.Info("Redis-Connection: " + connectionString);
+
+                options.ConnectionString = connectionString;
+                /*
                 if (connectionString != null && connectionString != "localhost")
                 {
                     options.ConnectionString = AsyncHelper.RunSync(() => Dns.GetHostAddressesAsync(connectionString))[0].ToString();
-                }
-            });
+                }*/
+            //});
 
             // Use database for language management
             Configuration.Modules.Zero().LanguageManagement.EnableDbLocalization();

@@ -5,12 +5,16 @@ using Abp.Extensions;
 using Abp.Notifications;
 using Abp.Timing;
 using Nucleus.Controllers;
+using Abp.Runtime.Caching;
+using System;
 
 namespace Nucleus.Web.Host.Controllers
 {
     public class HomeController : NucleusControllerBase
     {
         private readonly INotificationPublisher _notificationPublisher;
+        private readonly ICacheManager _cacheManager;
+
 
         public HomeController(INotificationPublisher notificationPublisher)
         {
@@ -19,6 +23,9 @@ namespace Nucleus.Web.Host.Controllers
 
         public IActionResult Index()
         {
+
+            _cacheManager.GetCache("MyCache").Set("startup", DateTime.Now.ToLongTimeString());
+
             return Redirect("/swagger");
         }
 
